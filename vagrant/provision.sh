@@ -14,11 +14,11 @@ cd ~
 
 # virtualenv
 sudo pip install virtualenv==1.11.4
-virtualenv pylog
-source pylog/bin/activate
+virtualenv feeder
+source feeder/bin/activate
 
-# install pylog
-pip install pylog
+# install feeder
+pip install feeder
 
 
 mkdir elk
@@ -62,6 +62,6 @@ sudo dpkg -i rabbitmq.deb
 echo "cd ~/elk" >> /home/vagrant/.bashrc
 
 # source virtualenv on login
-echo "source /home/vagrant/pylog/bin/activate" >> /home/vagrant/.bashrc
+echo "source /home/vagrant/feeder/bin/activate" >> /home/vagrant/.bashrc
 
 echo bootstrap done
