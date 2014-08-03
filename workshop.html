@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+              <section>
+                <section>
+                  <h1>ELK Workshop</h1>
+                </section>
+                <section>
+                	<h2>What's wrong with our logs?</h2>
+                	<ul>
+                		<li>Logs spread across many files and servers</li>
+                		<li>Incosistent/missing structure</li>
+                		<li><i>grep</i> too slow and inconvinient</li>
+                		<li>Hard to graph/count/analyze data</li>
+                		<li>Can't do stream processing</li>
+                	</ul>
+                </section>
+                <section>
+                	<h2>Workshop goals</h2>
+                	<ul>
+                		<li>Collect logs from real world applications</li>
+                		<li>Give the logs structure</li>
+                		<li>Analyze the logs</li>
+                		<li>Gain experience with ELK</li>
+                	</ul>
+                </section>
+                <section>
+                	<h2>What is ELk?</h2>
+                	<ul>
+                		<li class="fragment">Elasticsearch - Lucene based search server</li>
+                		<li class="fragment">Logstash - Log pipeline and processor</li>
+                		<li class="fragment">Kibana - Log analytics frontend for Elasticsearch</li>
+                	</ul>
+                </section>
+                <section>
+                  <h2>Prerequisites</h2>
+                  <ul>
+                    <li>Vagrant</li>
+                    <li>VirtualBox</li>
+                    <li>elk Vagrant box</li>
+                    <li>Workshop git repository (https://github.com/nir0s/elk-workshop.git)</li>
+                  </ul>
+                </section>
+              </section>
+              <section>
+                <section>
+                  <h2>Simple log collection</h2>
+                  <p>Collect logs from file and index in Elasticsearch for easy browsing</p>
+                  <pre>
+                    <code class="ruby" data-trim>
+input {
+	file {
+	    path => ["/var/log/apache/*.log"]
+	}
+}
+output {
+	elasticsearch {
+	    embedded => true
+	}
+}
+                    </code>
+                  </pre>
+                </section>
+                <section>
+                	<h2>Parsing logs using grok</h2>
+                	<pre>
+                		<code class="ruby" data-trim>
+filter {
+	grok {
+	    match => ["message", "%{COMBINEDAPACHELOG}"]
+	}
+}
+                		</code>
+                	</pre>
+                </section>
+                <section>
+                	<h2>Basic Kibana usage</h2>
+                	<ul>
+                		<li>Search for logs</li>
+                		<li>Filter by field</li>
+                		<li>Zoom in/out</li>
+                	</ul>
+                </section>
+                <section>
+                	<h2>Advanced Kibana usage</h2>
+                	<ul>
+                		<li>Widgets</li>
+                		<li>Saving/loading/sharing dashboards</li>
+                		<li>Preparing dashboards for the big screen</li>
+                	</ul>
+                </section>
+                <section>
+                	<h2>Multi-line logs</h2>
+                	<pre>
+                		<code class="ruby">
+filter {
+	multiline {
+		type => "catalina_out"
+		pattern => "^\s"
+		what => "previous"
+	}
+}
+                		</code>
+                	</pre>
+                </section>
+                <section>
+                	<h2>Codecs</h2>
+                	<p>Codecs parse logs directly within an input plugin using a pre-defined format or serializer</p>
+                	<pre>
+                		<code class="ruby">
+input {
+	file {
+		path => ["/path/to/file"]
+		codec => json
+	}
+}
+                		</code>
+                	</pre>
+                </section>
+                <section>
+                	<h2>Building a log pipeline using RabbitMQ</h2>
+                	<p>RabbitMQ is an advanced message broker with queuing abilities. We can use it to build an elaborate log pipeline with ELK</p>
+                	<pre>
+                		<code class="ruby">
+input {
+	rabbitmq {
+		host => "rabbitmq"
+		codec => "json"
+		exchange => "logs"
+		queue => "logstash-input"
+	}
+}
+						</code>
+					</pre>
+					<pre>
+						<code class="ruby">
+output {
+	rabbitmq {
+		host => "rabbitmq"
+		codec => "json"
+		exchange => "logs"
+	}
+}		
+	               		</code>
+                	</pre>
+                </section>
+                <section>
+                	<h2>Deduping logs</h2>
+                	<p>We can dedup logs in Elasticsearch, removing duplicate log entries to save space and cleanup the logs</p>
+					<pre>
+						<code class="ruby">
+filter {
+	fingerprint {
+		source => ["message"]
+		target => "fingerprint"
+	}
+}	
+output {
+	elasticsearch {
+		document_id => "%{fingerprint}"
+	}
+}		
+
+						</code>
+					</pre>
+                </section>
+                <section>
+                	<h2>Adding data to logs</h2>
+                	<ul>
+                		<li>translate filter</li>
+                		<li>GeoIP filter</li>
+                	</ul>
+                </section>
+                <section>
+                	<h2>Counting events</h2>
+                	<pre>
+                		<code class="ruby">
+filter {
+	metrics {
+		meter => ["messages"]
+		add_tag => "metric"
+	}
+}
+output {
+	if "metric" in ["tags"] {
+		graphite {
+			fields_are_metrics => true
+			include_metrics => "messages\.rate_[0-9]m"
+			metrics_format => "logstash.*"
+		}
+	}
+}
+                		</code>
+                	</pre>
+                </section>
+                <section>
+                	<h2>Output logs to additional places</h2>
+                	<ul>
+                		<li>files</li>
+                		<li>Pub/sub</li>
+                		<li>Hipchat, IRC</li>
+                		<li>Nagios/Zabbix</li>
+                		<li>statsd</li>
+                		<li>Librato/datadog</li>
+                	</ul>
+                </section>
+              </section>
+              <section>
+              	<h1>Final word</h1>
+              	<h3>What is a log really?</h3>
+              	<h2 class="fragment">Any (timestamped?) event stream</h2>
+              </section>
+              <section>
+              	<h1>Thanks for participating!</h1>
+              	<h2>Where to go next</h2>
+              	<ul>
+              		<li><a href="http://logstash.net/docs/1.4.2/">Logstash docs</a></li>
+              		<li><a href="http://www.logstashbook.com/">Logstash book</a></li>
+              	</ul>
+              </section>
+			</div>
+
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
