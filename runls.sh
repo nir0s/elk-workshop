@@ -1,0 +1,1 @@
+~/elk/logstash/bin/logstash -f ~/elk-workshop/resources/logstash.conf
