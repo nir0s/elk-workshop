@@ -29,6 +29,7 @@ mkdir logstash
 wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz -O logstash.tar.gz
 tar -xzvf logstash.tar.gz -C logstash --strip 1
 rm logstash.tar.gz
+logstash/bin/plugin install contrib
 cp /home/vagrant/resources/logstash.conf .
 
 # install elasticsearch
