@@ -1,0 +1,1 @@
+curl -XPUT http://localhost:9200/_template/logstash_index -d '{"template":"logstash-*","mappings":{"logs":{"_all":{"enabled":false},"properties":{"bytes":{"type":"integer"}}}}}'

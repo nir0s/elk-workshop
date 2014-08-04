@@ -64,6 +64,7 @@ cd ~
 git clone http://github.com/nir0s/elk-workshop
 cd ~/elk-workshop
 chmod +x runls.sh
+chmod +x clear_indices.sh
 
 # set shell login base dir
 echo "cd ~/elk-workshop" >> /home/vagrant/.bashrc
