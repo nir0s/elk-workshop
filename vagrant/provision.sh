@@ -41,7 +41,7 @@ rm elasticsearch.deb
 # install elasticsearch plugins
 sudo /usr/share/elasticsearch/bin/plugin --install mobz/elasticsearch-head
 sudo /usr/share/elasticsearch/bin/plugin --install lmenezes/elasticsearch-kopf/1.2
-
+sudo /usr/share/elasticsearch/bin/plugin --install lukas-vlcek/bigdesk
 # install kibana
 mkdir kibana
 wget https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz -O kibana.tar.gz
@@ -60,8 +60,9 @@ wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.2.4/rabbitmq-server_3.2
 sudo dpkg -i rabbitmq.deb
 
 # clone workshop repo
-
 git clone http://github.com/nir0s/elk-workshop
+cd ~/elk-workshop
+chmod +x runls.sh
 
 # set shell login base dir
 echo "cd ~/elk-workshop" >> /home/vagrant/.bashrc
