@@ -6,7 +6,7 @@ A logging workshop backed by the ELK Trio.
 # Presentation
 
 a workshop.html is supplied backed by reveal.js
-It is also available at http://slides.com/nir0s
+It is also available at http://slides.com/nir0s/elk-workshop#/
 
 # Requirements
 
@@ -31,7 +31,17 @@ The vagrant directory contains a Vagrantfile that provisions a machine with:
 
 ## Box
 
-The Vagrantfile in the root directory will load a box created from the above provisioned machine.
+The [Vagrantfile](https://github.com/nir0s/elk-workshop/blob/master/Vagrantfile) in the root directory will load a box created from the above provisioned machine.
+
+To get started run:
+
+```bash
+vagrant box add <box_url> --name elk
+# then, from the same dir
+vagrant up
+# and then
+vagrant ssh
+```
 
 # Resources
 
@@ -60,12 +70,12 @@ alternatively, run:
 For instance, from the ~/elk-workshop directory, run:
 
 ```bash
-mouth feed -f ApacheAccess -t File -m 1000 -g 0.001 -b 200
+mouth feed -f ApacheAccessEx -t File -m 1000 -g 0.001
 ```
 
-This will write an ApacheAccessEx log, to a file in the current directory called generated.log.
+This will write Apache Extended Access logs to a file called generated.log in the current directory.
 
-Please refer to the [documentation](http://feeder.readthedocs.org) to understand how to use it.
+Please refer to the [documentation](http://feeder.readthedocs.org) to understand how to use feeder.
 
 # Web Access
 

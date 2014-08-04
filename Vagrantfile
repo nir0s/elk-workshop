@@ -7,7 +7,7 @@ Vagrant.configure('2') do |config|
   config.vm.define :elk do |elk|
     elk_ip = '11.0.1.7'
     elk.vm.provider :virtualbox do |vb|
-      vb.name = "elk"
+      vb.name = "elk_workshop"
       vb.customize ['modifyvm', :id, '--memory', '2048']
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end

@@ -60,6 +60,7 @@ wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.2.4/rabbitmq-server_3.2
 sudo dpkg -i rabbitmq.deb
 
 # clone workshop repo
+cd ~
 git clone http://github.com/nir0s/elk-workshop
 cd ~/elk-workshop
 chmod +x runls.sh
