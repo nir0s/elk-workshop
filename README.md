@@ -26,7 +26,6 @@ The vagrant directory contains a Vagrantfile that provisions a machine with:
 * [Logstash](http://www.elasticsearch.org/overview/logstash)
 * [Kibana](http://www.elasticsearch.org/overview/kibana)
 * [feeder](http://feeder.readthedocs.org)
-* [Nginx](http://nginx.com/)
 * [RabbitMQ](http://www.rabbitmq.com/)
 
 ## Box
@@ -47,9 +46,7 @@ vagrant ssh
 
 The resources directory contains:
 
-* An extended apache dashboard for Kibana. [Link](https://github.com/nir0s/elk-workshop/blob/master/resources/apache_dashboard_extended.json)
 * A logstash configuration file.
-* An Nginx config file which exposes Kibana in port 3000 and ES in 9200.
 
 # Running logstash
 
@@ -79,7 +76,7 @@ Please refer to the [documentation](http://feeder.readthedocs.org) to understand
 
 # Web Access
 
-* To access the Kibana dashboard, please go to [http://11.0.1.7:3000/index.html#/dashboard/file/logstash.json](http://11.0.1.7:3000/index.html#/dashboard/file/logstash.json).
+* To access the Kibana dashboard, please go to [http://11.0.1.7:5601/index.html#/dashboard/file/logstash.json](http://11.0.1.7:5601/index.html#/dashboard/file/logstash.json).
 * To access the Head dashboard, please go to [http://11.0.1.7:9200/_plugin/head](http://11.0.1.7:9200/_plugin/head).
 * To access the Kopf dashboard, please go to [http://11.0.1.7:9200/_plugin/kopf](http://11.0.1.7:9200/_plugin/kopf).
 * To access the BigDesk dashboard, please go to [http://11.0.1.7:9200/_plugin/bigdesk](http://11.0.1.7:9200/_plugin/bigdesk).
