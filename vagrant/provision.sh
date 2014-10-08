@@ -1,5 +1,6 @@
 function install_logstash()
 {
+    echo installing logstash
     mkdir logstash
     sudo mkdir /opt/logstash
     sudo wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz -O /opt/logstash.tar.gz
@@ -13,6 +14,7 @@ function install_logstash()
 
 function install_elasticsearch()
 {
+    echo installing elasticsearch
     sudo wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.0.Beta1.deb -O /opt/elasticsearch.deb
     sudo dpkg -i /opt/elasticsearch.deb
     sudo update-rc.d elasticsearch defaults 95 10
@@ -27,6 +29,7 @@ function install_elasticsearch()
 
 function install_kibana()
 {
+    echo installing kibana
     sudo mkdir /opt/kibana
     sudo wget https://download.elasticsearch.org/kibana/kibana/kibana-4.0.0-BETA1.tar.gz -O /opt/kibana.tar.gz
     sudo tar -xzvf /opt/kibana.tar.gz -C /opt/kibana --strip-components=1
@@ -45,6 +48,7 @@ function install_kibana()
 
 function install_rabbitmq()
 {
+    echo installing rabbitmq
     sudo apt-get install -y erlang-nox
     sudo wget http://www.rabbitmq.com/releases/rabbitmq-server/v3.2.4/rabbitmq-server_3.2.4-1_all.deb -O /opt/rabbitmq.deb
     sudo dpkg -i /opt/rabbitmq.deb
@@ -54,21 +58,23 @@ function main()
 {
     echo bootstrapping...
 
-    # update
+    echo updating db cache
     sudo apt-get -y update &&
-    # install prereqs
+    echo installing dependencies
     sudo apt-get install -y vim openjdk-7-jdk python-dev curl git &&
-    # install pip
+    echo installing pip
     curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | sudo python &&
     # go home
     cd ~
-    # virtualenv
+    echo installing virtualenv
     sudo pip install virtualenv==1.11.4 &&
+    echo creating feeder virtualenv
     virtualenv feeder &&
     source feeder/bin/activate &&
-    # install feeder
+    echo installing feeder
     pip install feeder &&
 
+    echo installing elk
     mkdir elk &&
     cd elk &&
     install_logstash &&
@@ -76,16 +82,16 @@ function main()
     install_kibana &&
     install_rabbitmq &&
 
-    # clone workshop repo
+    echo cloning workshop repo
     cd ~ &&
     git clone http://github.com/nir0s/elk-workshop &&
     cd ~/elk-workshop &&
     chmod +x runls.sh &&
 
-    # set shell login base dir
+    echo setting up homedir
     echo "cd ~/elk-workshop" >> /home/vagrant/.bashrc
 
-    # source virtualenv on login
+    echo setting up venv on login
     echo "source /home/vagrant/feeder/bin/activate" >> /home/vagrant/.bashrc
     echo bootstrap done
 }
